@@ -27,22 +27,88 @@ while(True):
     if(not ret):
       break
 
-    tamano=50 #quemado por ahora pero se deberia poner segun la pantalla
-    espacio=tamano*0.15
-    reinaNegra=cv2.imread("BlackQ.png")
-    reinaN=resize(reinaNegra,width=tamano,height=tamano)
-    RN=cv2.cvtColor(reinaNegra,cv2.COLOR_BGR2BGRA)
 
+
+
+    tamano=40 #quemado por ahora pero se deberia poner segun la pantalla
+    espacio=int(tamano*0.10) 
+    margen=50
     frame_h,frame_w,frame_c=frame.shape
+    offset1=espacio + margen
+    offset2=espacio + margen
+
+    multTablero=10
+    tableroSize=int(multTablero*tamano)
+    multMargen=0.55
+    tableroMarg=int(multMargen*margen)
+
+
+    tablero=cv2.imread("tablero-negro.png")
+    tablero=cv2.rotate(tablero, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    tablero=resize(tablero,width=tableroSize,height=tableroSize)
+    tablero=cv2.cvtColor(tablero,cv2.COLOR_BGR2BGRA)
+
     overlay=np.zeros((frame_h,frame_w,4),dtype="uint8")
-    RN_h,RN_w,RN_c=RN.shape
+    tablero_h,tablero_w,tablero_c=tablero.shape
 
-    for i in range(RN_h):
-        for j in range(RN_w):
-            if RN[i,j][3]!=0:
-                overlay[i+10,j+10]=RN[i,j]
+    for i in range(tablero_h):
+        for j in range(tablero_w):
+            if tablero[i,j][3]!=0:
+                overlay[i+tableroMarg, j+tableroMarg]=tablero[i,j]
+                        
 
-    cv2.addWeighted(overlay,0.5,frame, 1 , 0, frame)
+    cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+
+
+
+    for g in range(6):
+        if (g % 2) != 0:
+            offset2+=(espacio+tamano)
+
+        for h in range(4):
+
+            if g<3:
+
+                fichaRoja=cv2.imread("Red.png")
+                fichaR=resize(fichaRoja,width=tamano,height=tamano)
+                FR=cv2.cvtColor(fichaR,cv2.COLOR_BGR2BGRA)
+
+                overlay=np.zeros((frame_h,frame_w,4),dtype="uint8")
+                FR_h,FR_w,FR_c=FR.shape
+
+                for i in range(FR_h):
+                    for j in range(FR_w):
+                        if FR[i,j][3]!=0:
+                            overlay[i+offset2, j+offset1]=FR[i,j]
+                        
+
+                cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+            else:
+                fichaRoja=cv2.imread("Black.png")
+                fichaR=resize(fichaRoja,width=tamano,height=tamano)
+                FR=cv2.cvtColor(fichaR,cv2.COLOR_BGR2BGRA)
+
+                overlay=np.zeros((frame_h,frame_w,4),dtype="uint8")
+                FR_h,FR_w,FR_c=FR.shape
+
+                for i in range(FR_h):
+                    for j in range(FR_w):
+                        if FR[i,j][3]!=0:
+                            overlay[i+offset2, j+offset1]=FR[i,j]
+                        
+
+                cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+
+
+            if(h==3):
+                offset2=espacio + margen
+            else:
+                offset2+=(2*tamano + 2*espacio)
+        if(g==2):
+            offset1+=(3*tamano + 3*espacio)
+        else:
+            offset1+=(tamano + espacio)
+
 
     cv2.imshow("Video: --> Original",frame)
     
