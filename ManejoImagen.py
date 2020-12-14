@@ -32,16 +32,17 @@ def inputImg(message="\tPath de la imagen: "):   #función para cargar un archiv
         except:
             print ("\n\tRuta invalida")
 
-print ("\n\t\tLABORATORIO 3\n\tMANEJO DE IMÁGENES EN OPENCV")
+print ("\n\t\tDETECCION DE UMBRAL")
 
 while(True):
-    print ("\n\n\t0. Salir\n\t1. Cargar una imagen\n\t2. Clonar una imagen"+
-           "\n\t3. Selección de un ROI\n\t4. Convertir RGB a Gray Level"+
-           "\n\t5. Valor de un Pixel en su posición fila y columna (brillo)\n\t6. Inicializar una imagen"+
-           " con valor constante\n\t7. Obtener valor de nivel de brillo"
-           " para una posición (i,j) dada\n\t8. Extraer canales"+
-           " RGB de una imagen\n\t9. Realzado de brillo de una imagen\n\t10. Separar imagenes\n\t11. Unir imagenes\n")
-    op = input("\n\tIngrese la opcion --> ")
+    """print ("\n\n\t0. Salir\n\t1. Cargar una imagen\n\t2. Clonar una imagen"+
+                       "\n\t3. Selección de un ROI\n\t4. Convertir RGB a Gray Level"+
+                       "\n\t5. Valor de un Pixel en su posición fila y columna (brillo)\n\t6. Inicializar una imagen"+
+                       " con valor constante\n\t7. Obtener valor de nivel de brillo"
+                       " para una posición (i,j) dada\n\t8. Extraer canales"+
+                       " RGB de una imagen\n\t9. Realzado de brillo de una imagen\n\t10. Separar imagenes\n\t11. Unir imagenes\n")
+                op = input("\n\tIngrese la opcion --> ")"""
+    op="10"
 
     if (op=='0'):
         break
@@ -59,8 +60,6 @@ while(True):
         img=roi
         
         
-        img=cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
-
         cv2.imshow("Imagen", img)
         cv2.waitKey(0)
         print("Tamaño de imagen(ancho, largo, canales)")

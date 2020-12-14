@@ -15,7 +15,7 @@ import numpy as np
 capture = cv2.VideoCapture(0)
 
 
-cv2.namedWindow("Video: --> Original", cv2.WINDOW_AUTOSIZE)
+cv2.namedWindow("Checkers", cv2.WINDOW_AUTOSIZE)
 
 contador=0
 tablero=[]
@@ -120,7 +120,7 @@ while(True):
             cv2.addWeighted(piezaR,1,frame, 1 , 0, frame)
 
 
-    cv2.imshow("Video: --> Original",frame)
+    cv2.imshow("Checkers",frame)
     
     key = cv2.waitKey(33) #Retraso en milisegundos para leer el siguiente frame (nota para archivo de imagen poner 0 )
     #Termina presionando la tecla Esc

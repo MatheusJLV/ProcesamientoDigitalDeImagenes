@@ -7,8 +7,6 @@ while True:
     _, frame = cap.read()
     hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     # Red color
-    #low_red = np.array([161, 155, 84])
-    #high_red = np.array([179, 255, 255])
     low_red = np.array([161, 50, 50])
     high_red = np.array([179, 255, 255])
     red_mask = cv2.inRange(hsv_frame, low_red, high_red)
@@ -25,11 +23,6 @@ while True:
     green_mask = cv2.inRange(hsv_frame, low_green, high_green)
     green = cv2.bitwise_and(frame, frame, mask=green_mask)
 
-    # Every color except white
-    # low = np.array([0, 42, 0])
-    # high = np.array([179, 255, 255])
-    # mask = cv2.inRange(hsv_frame, low, high)
-    # result = cv2.bitwise_and(frame, frame, mask=mask)
 
     cv2.imshow("Frame", frame)
     cv2.imshow("Red", red)
