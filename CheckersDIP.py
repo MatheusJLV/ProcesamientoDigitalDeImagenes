@@ -11,16 +11,36 @@ import cv2     #llama a OpenCv
 from imutils import resize
 import numpy as np
 
+
+from Piece import Piece
+from Board import Board
+
+def draw_circle(event,x,y,flags,param):
+    
+    if event == cv2.EVENT_LBUTTONDBLCLK:
+        print(y,x)
+        tablero.selection(y, x)
+
+def printCoor(piece):
+    print("Coordinadas")
+    print(piece.row)
+    print(piece.col)
+    print(piece.size)
+    print("")
+
+
 #Captura de video desde cámara
 capture = cv2.VideoCapture(0)
 
 
 cv2.namedWindow("Checkers", cv2.WINDOW_AUTOSIZE)
+cv2.setMouseCallback('Checkers',draw_circle)
 
 contador=0
 tablero=[]
-piezasBlancas=[]
-piezasRojas=[]
+
+dicPieces={}
+
 while(True):
 
     #Lectura del frame desde la señal de video (cámara o archivo de video)
@@ -152,8 +172,11 @@ while(True):
                             if FR[i,j][3]!=0:
                                 overlay[i+offset2, j+offset1]=FR[i,j]
                             
-                    piezasRojas.append(overlay)
-                    cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+                    # piezasRojas.append(overlay)
+                    # cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+                    piece=Piece(offset2, offset1,"Red", overlay,tamano)
+                    dicPieces[(offset2,offset1)]=piece
+
                 else:
                     fichaRoja=cv2.imread("Black.png")
                     fichaR=resize(fichaRoja,width=tamano,height=tamano)
@@ -166,9 +189,12 @@ while(True):
                         for j in range(FR_w):
                             if FR[i,j][3]!=0:
                                 overlay[i+offset2, j+offset1]=FR[i,j]
-                            
-                    piezasBlancas.append(overlay)
-                    cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
+
+                    piece=Piece(offset2, offset1,"Black", overlay,tamano)
+                    dicPieces[(offset2,offset1)]=piece
+  
+                    # piezasBlancas.append(overlay)
+                    # cv2.addWeighted(overlay,1,frame, 1 , 0, frame)
 
 
                 if(h==3):
@@ -179,14 +205,15 @@ while(True):
                 offset1+=(3*tamano + 3*espacio)
             else:
                 offset1+=(tamano + espacio)
-    
+        tablero=Board(tablero,dicPieces,tablero_h,tablero_w,espacio+tamano,espacio)
     else :
-        cv2.addWeighted(tablero,1,frame, 1 , 0, frame)
-        for piezaB in piezasBlancas:
-            cv2.addWeighted(piezaB,1,frame, 1 , 0, frame)
+        cv2.addWeighted(tablero.board,1,frame, 1 , 0, frame)
+        # cv2.addWeighted(tablero,1,frame, 1 , 0, frame)
+        # for piezaB in piezasBlancas:
+        #     cv2.addWeighted(piezaB,1,frame, 1 , 0, frame)
 
-        for piezaR in piezasRojas:
-            cv2.addWeighted(piezaR,1,frame, 1 , 0, frame)
+        # for piezaR in piezasRojas:
+        #     cv2.addWeighted(piezaR,1,frame, 1 , 0, frame)
 
 
     cv2.imshow("Checkers",frame)
@@ -195,6 +222,16 @@ while(True):
     #Termina presionando la tecla Esc
     if (key==27):
         break
+    elif ( key == 97):
+        tablero.movePiece("up")
+        #print(mouseY, mouseX)
+        #tablero.selectPiece(mouseY, mouseX)
+    elif key==-1:  # normally -1 returned,so don't print it
+        
+        continue
+    else :
+        print(key)
+
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
