@@ -36,43 +36,34 @@ class Board:
                 print("GANO BLACK")
 
     def movePiece(self,opcion):
-
-        rowIni= opcion.row
-        colIni= opcion.col
-
         for piece in opcion.piezas:
             print(piece.row,piece.col)
             self.borrarPieza(piece)
-
             
         piece=self.pieces[(self.selectedPiece)]
-        #roi=self.board[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]
+        roi=self.board[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]
         
-
-        if colIni>(self.width-self.size_square) and piece.color=="Red":
-            piece.makeKing()
-            
-        elif colIni<(self.width-self.size_square*7) and piece.color=="Black":
-            piece.makeKing()
-            
-
-        roi=piece.overlay[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]
+        rowIni= opcion.row
+        colIni= opcion.col
 
         rowFinal=rowIni+piece.size
         colFinal=colIni+piece.size
 
         self.board[rowIni:rowFinal,colIni:colFinal]=roi
         self.board[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]=0
-
-     
-        piece.overlay[rowIni:rowFinal,colIni:colFinal]=roi
         piece.overlay[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]=0
-    
+        piece.overlay[rowIni:rowFinal,colIni:colFinal]=roi
 
         self.pieces.pop((piece.row,piece.col))
         
         piece.changePos(rowIni,colIni)
         
+        if colIni>(self.width-self.size_square) and piece.color=="Red":
+            piece.makeKing()
+            print("se volvio rey el rojo")
+        elif colIni<(self.width-self.size_square*7) and piece.color=="Black":
+            piece.makeKing()
+            print("se volvio rey el negro")
 
         self.pieces[(rowIni,colIni)]=piece
       
@@ -102,6 +93,7 @@ class Board:
             for movimiento in self.opciones :
                 if(movimiento.row<row<(movimiento.row+self.size_square) and  movimiento.col<col<(movimiento.col+self.size_square)):
                     bandera=False
+                    print(movimiento.piezas)
                     self.movePiece(movimiento)
             if bandera :
                 self.selectPiece(row,col)
@@ -135,6 +127,9 @@ class Board:
         self.espacioEnBlanco("down",row,col,False,listPiezas)
 
         
+       
+
+
     def espacioEnBlanco(self,direccion, row,col,enemy,listPiezas):
         
         if direccion=="up":
