@@ -17,6 +17,7 @@ class Board:
         self.opciones = []
         self.putPieces()
         self.turno = "Black"
+        self.blocked= False
        
         
     def putPieces(self):
@@ -27,13 +28,43 @@ class Board:
     def cambiarTurno(self):
 
         if self.turno == "Red":
-            self.turno = "Black"
+
             if self.black_left==0:
                 print("GANO  RED")
+            else :
+                self.turno = "Black"
+                self.PosibleComer()
+
+
         elif self.turno == "Black":
-            self.turno = "Red"
             if self.red_left==0:
                 print("GANO BLACK")
+            else :
+                self.turno = "Red"
+                self.PosibleComer()
+
+    def PosibleComer(self):
+        for key in self.pieces:
+            piece= self.pieces[key]
+            if piece.color==self.turno:
+                self.planificarPieza(piece)
+        cant=0
+        opciones=[]
+        for opcion in self.opciones:
+            if len(opcion.piezas)>cant :
+                opciones.clear()
+                opciones.append(opcion)
+                cant=len(opcion.piezas)
+            elif len(opcion.piezas)==cant and cant!=0  :
+                opciones.append(opcion)
+
+        self.opciones=opciones
+        self.dibujarOpciones()
+        if len(opciones)>0:
+            self.blocked=True
+
+                
+
 
     def movePiece(self,opcion):
 
@@ -44,8 +75,8 @@ class Board:
             print(piece.row,piece.col)
             self.borrarPieza(piece)
 
-            
-        piece=self.pieces[(self.selectedPiece)]
+        piece=opcion.pieza
+        #piece=self.pieces[(self.selectedPiece)]
         #roi=self.board[piece.row: piece.row+piece.size,piece.col:piece.col+piece.size]
         
 
@@ -80,6 +111,7 @@ class Board:
         self.opciones.remove(opcion)
         self.limpiarOpciones()
         self.selectedPiece=None
+        self.blocked=False
         self.cambiarTurno()
 
 
@@ -95,7 +127,8 @@ class Board:
 
     def selection(self, row, col):
         print("entro")
-        if len(self.opciones)==0:
+       
+        if len(self.opciones)==0 and not self.blocked:
             self.selectPiece(row,col)
         else :
             bandera=True
@@ -103,7 +136,7 @@ class Board:
                 if(movimiento.row<row<(movimiento.row+self.size_square) and  movimiento.col<col<(movimiento.col+self.size_square)):
                     bandera=False
                     self.movePiece(movimiento)
-            if bandera :
+            if bandera and not self.blocked:
                 self.selectPiece(row,col)
 
     def selectPiece(self, row, col):
@@ -116,13 +149,25 @@ class Board:
                 
                 if  piece.color==self.turno:
                     self.limpiarOpciones()
-                    self.selectedPiece=(piece.row,piece.col)
-                    self.planificarCampo(piece.row,piece.col,[])
-                    if(piece.king) :
-                        piece.direction=piece.direction*-1
-                        self.planificarCampo(piece.row,piece.col,[])
-                        piece.direction=piece.direction*-1
+                    self.planificarPieza(piece)
+                    self.dibujarOpciones()
+                    # self.limpiarOpciones()
+                    # self.selectedPiece=(piece.row,piece.col)
+                    # self.planificarCampo(piece.row,piece.col,[])
+                    # if(piece.king) :
+                    #     piece.direction=piece.direction*-1
+                    #     self.planificarCampo(piece.row,piece.col,[])
+                    #     piece.direction=piece.direction*-1
                 
+    def planificarPieza(self,piece):
+        self.selectedPiece=(piece.row,piece.col)
+        self.planificarCampo(piece.row,piece.col,[])
+        if(piece.king) :
+            piece.direction=piece.direction*-1
+            self.planificarCampo(piece.row,piece.col,[])
+            piece.direction=piece.direction*-1
+        
+        
 
     def limpiarOpciones(self):
 
@@ -154,7 +199,7 @@ class Board:
                     if enemy :
                         listPiezas.append(self.pieces[(row,col)])
                         self.planificarCampo(newRow,newCol,listPiezas.copy())
-                    self.dibujarOpcion(row,col,direccion,listPiezas.copy())
+                    self.crearOpcion(row,col,direccion,listPiezas.copy())
                
         
         elif direccion=="down":
@@ -172,11 +217,11 @@ class Board:
                     if enemy :
                         listPiezas.append(self.pieces[(row,col)])
                         self.planificarCampo(newRow,newCol,listPiezas.copy())
-                    self.dibujarOpcion(row,col,direccion,listPiezas.copy())
+                    self.crearOpcion(row,col,direccion,listPiezas.copy())
                
 
        
-    def dibujarOpcion(self,row,col, direccion ,piezas):
+    def crearOpcion(self,row,col, direccion ,piezas):
         try: 
             piece=self.pieces[(row,col)]
         except KeyError as e:
@@ -190,8 +235,8 @@ class Board:
                     
             if (self.width-(8*self.size_square))<x<self.width  and (self.height-(8*self.size_square))<y<self.height:
 
-                cv2.circle(self.board,(x,y),15,(255,0,0),-1)
-                newMov= Movimiento(piece.row-self.size_square,piece.col+self.size_square*self.pieces[self.selectedPiece].direction,piezas)
+                #cv2.circle(self.board,(x,y),15,(255,0,0),-1)
+                newMov= Movimiento(piece.row-self.size_square,piece.col+self.size_square*self.pieces[self.selectedPiece].direction,piezas,self.pieces[self.selectedPiece])
                 self.opciones.append(newMov)
             
         
@@ -202,10 +247,17 @@ class Board:
             x = int(piece.size/2) + piece.col+self.size_square*self.pieces[self.selectedPiece].direction
                     
             if (self.width-(8*self.size_square))<x<self.width and (self.height-(8*self.size_square))<y<self.height:
-                cv2.circle(self.board,(x,y),15,(255,0,0),-1)
-                newMov= Movimiento(piece.row+self.size_square,piece.col+self.size_square*self.pieces[self.selectedPiece].direction,piezas)
+                #cv2.circle(self.board,(x,y),15,(255,0,0),-1)
+                newMov= Movimiento(piece.row+self.size_square,piece.col+self.size_square*self.pieces[self.selectedPiece].direction,piezas,self.pieces[self.selectedPiece])
                 self.opciones.append(newMov)
              
-    
+    def dibujarOpciones(self):
+        piece= self.pieces[self.selectedPiece]
+        for opcion in self.opciones:
+            y= int(piece.size/2) + opcion.row
+                  
+            x = int(piece.size/2) + opcion.col
+
+            cv2.circle(self.board,(x,y),15,(255,0,0),-1)
         
         
