@@ -4,7 +4,7 @@ from OpcionMovimiento import Movimiento
 
 class Board:
 
-    def __init__(self, overlay,pieces, height, width, sizeSquare, space):
+    def __init__(self, overlay,pieces, height, width, sizeSquare, space,estado):
         self.board= overlay
         self.size_square=sizeSquare
         self.height=height
@@ -18,6 +18,8 @@ class Board:
         self.putPieces()
         self.turno = "Black"
         self.blocked= False
+        self.ganador=""
+        self.estado=estado
        
         
     def putPieces(self):
@@ -31,6 +33,8 @@ class Board:
 
             if self.black_left==0:
                 print("GANO  RED")
+                self.ganador="Red"
+                self.estado["evento"]="final"
             else :
                 self.turno = "Black"
                 self.PosibleComer()
@@ -39,6 +43,8 @@ class Board:
         elif self.turno == "Black":
             if self.red_left==0:
                 print("GANO BLACK")
+                self.ganador="Black"
+                self.estado["evento"]="final"
             else :
                 self.turno = "Red"
                 self.PosibleComer()
