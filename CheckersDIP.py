@@ -137,8 +137,8 @@ while(True):
                 
                 cv2.circle(frame,(x1,y1),7,(0,255,255),-1)
                 #PARA DIBUJAR CONTORNO Y MOSTRAR COORDENADAS. PERO NO NECESITA EXIBIRSE
-                font=cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(frame,"{} {}".format(x1,y1),(x1+10,y1),font,0.75,(0,255,255),1,cv2.LINE_AA)
+                #font=cv2.FONT_HERSHEY_SIMPLEX
+                #cv2.putText(frame,"{} {}".format(x1,y1),(x1+10,y1),font,0.75,(0,255,255),1,cv2.LINE_AA)
                 #nuevoContorno=cv2.convexHull(c)
                 #cv2.drawContours(frame,[c],-1,[0,255,255],3)
                 break
@@ -168,13 +168,14 @@ while(True):
                 
                 cv2.circle(frame,(x2,y2),7,(255,0,255),-1)
                 #PARA DIBUJAR CONTORNO Y MOSTRAR COORDENADAS. PERO NO NECESITA EXIBIRSE
-                font=cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(frame,"{} {}".format(x2,y2),(x2+10,y2),font,0.75,(255,0,255),1,cv2.LINE_AA)
+                #font=cv2.FONT_HERSHEY_SIMPLEX
+                #cv2.putText(frame,"{} {}".format(x2,y2),(x2+10,y2),font,0.75,(255,0,255),1,cv2.LINE_AA)
                 #nuevoContorno=cv2.convexHull(c)
                 #cv2.drawContours(frame,[c],-1,[255,0,255],3)
                 break
                 
         #lectura de puntero
+        print(ready)
         if(ready>3):
 	        if((segundos>56)):
 	        	marcador=1
@@ -203,6 +204,7 @@ while(True):
 	            	tablero.selection(y1, x1, "Black")
 
         else:
+        	print("else")
         	if(base<segundos):
         		base=segundos
         		ready=ready+1
