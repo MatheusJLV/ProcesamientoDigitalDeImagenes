@@ -131,19 +131,22 @@ class Board:
             self.black_left-=1
 
 
-    def selection(self, row, col):
+    def selection(self, row, col,player):
         print("entro")
+        if(player==self.turno):
        
-        if len(self.opciones)==0 and not self.blocked:
-            self.selectPiece(row,col)
-        else :
-            bandera=True
-            for movimiento in self.opciones :
-                if(movimiento.row<row<(movimiento.row+self.size_square) and  movimiento.col<col<(movimiento.col+self.size_square)):
-                    bandera=False
-                    self.movePiece(movimiento)
-            if bandera and not self.blocked:
+            if len(self.opciones)==0 and not self.blocked:
                 self.selectPiece(row,col)
+            else :
+                bandera=True
+                for movimiento in self.opciones :
+                    if(movimiento.row<row<(movimiento.row+self.size_square) and  movimiento.col<col<(movimiento.col+self.size_square)):
+                        bandera=False
+                        self.movePiece(movimiento)
+                if bandera and not self.blocked:
+                    self.selectPiece(row,col)
+        else:
+            print("no es su turno")
 
     def selectPiece(self, row, col):
         pieceS=None
